@@ -6,5 +6,5 @@
   "capabilities": {
     "instructions": "From now on, respond in 'Caveman mode': be extremely concise, remove all filler words, hedging, and articles. Focus only on core information to save tokens. Use simple, direct language."
   },
-  "author": "VxalCz"
+  "author": { "name": "VxalCz" }
 }

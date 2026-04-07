@@ -3,7 +3,7 @@
   "name": "Caveman Compress",
   "version": "1.0.0",
   "description": "Compresses markdown/text memory files to save input tokens.",
-  "author": "VxalCz",
+  "author": { "name": "VxalCz" },
   "capabilities": {
     "mcpServers": [
       {
