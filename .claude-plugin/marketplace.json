@@ -1,0 +1,22 @@
+{
+	"$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+	"name": "CaveMan",
+	"description": "Cut token usage on both sides of the conversation — Caveman mode forces concise responses, Caveman Compress shrinks memory files",
+	"owner": {
+		"name": "VxalCz"
+	},
+	"plugins": [
+		{
+			"name": "caveman",
+			"source": "./plugins/caveman",
+			"category": "productivity",
+			"homepage": "https://github.com/VxalCz/CaveMan"
+		},
+		{
+			"name": "caveman-compress",
+			"source": "./plugins/caveman-compress",
+			"category": "productivity",
+			"homepage": "https://github.com/VxalCz/CaveMan"
+		}
+	]
+}

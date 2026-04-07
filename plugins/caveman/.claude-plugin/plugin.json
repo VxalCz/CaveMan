@@ -1,0 +1,9 @@
+{
+	"name": "caveman",
+	"version": "1.0.0",
+	"description": "Activates Caveman mode — forces Claude to respond concisely, removing filler, hedging, and articles. Saves ~65% on output tokens.",
+	"author": {"name": "VxalCz"},
+	"license": "MIT",
+	"keywords": ["token-savings", "concise", "output", "caveman"],
+	"skills": "./skills/"
+}
