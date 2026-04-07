@@ -1,11 +1,17 @@
 {
-	"name": "caveman-compress",
-	"version": "1.0.0",
-	"description": "Compresses markdown/text memory files to save input tokens on every future session load. Saves ~45% on context tokens.",
-	"author": {"name": "VxalCz"},
-	"license": "MIT",
-	"keywords": ["token-savings", "compress", "markdown", "context", "caveman"],
-	"skills": "./skills/",
-	"hooks": "./hooks/",
-	"commands": "./commands/"
+  "id": "caveman-compress",
+  "name": "Caveman Compress",
+  "version": "1.0.0",
+  "description": "Compresses markdown/text memory files to save input tokens.",
+  "author": "VxalCz",
+  "capabilities": {
+    "mcpServers": [
+      {
+        "name": "caveman-processor",
+        "command": "node",
+        "args": ["./dist/index.js"] 
+      }
+    ],
+    "instructions": "Use the caveman-processor to compress markdown files when saving memory or context."
+  }
 }
