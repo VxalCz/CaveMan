@@ -10,12 +10,13 @@ Flow:
   4. If still failing → restore original, report error
 """
 
+import re
 import subprocess
 import sys
 from pathlib import Path
 
 from .detect import should_compress
-from .validate import validate
+from .validate import validate, FENCED_CODE_RE
 
 COMPRESS_SYSTEM_PROMPT = """\
 You are a token-efficient text compressor for AI context files.
@@ -52,12 +53,25 @@ def _call_claude(prompt: str, system: str) -> str:
 
 
 def _compress_text(text: str) -> str:
+    # Extract fenced code blocks and replace with placeholders before sending to Claude.
+    # This guarantees code blocks are preserved byte-for-byte regardless of model behavior.
+    blocks = FENCED_CODE_RE.findall(text)
+    protected = text
+    for i, block in enumerate(blocks):
+        protected = protected.replace(block, f"{{{{CODE_BLOCK_{i}}}}}", 1)
+
     prompt = (
         "Compress the following text according to the rules. "
         "Output only the compressed version:\n\n"
-        + text
+        + protected
     )
-    return _call_claude(prompt, COMPRESS_SYSTEM_PROMPT)
+    compressed = _call_claude(prompt, COMPRESS_SYSTEM_PROMPT)
+
+    # Restore code blocks
+    for i, block in enumerate(blocks):
+        compressed = compressed.replace(f"{{{{CODE_BLOCK_{i}}}}}", block, 1)
+
+    return compressed
 
 
 def _fix_errors(compressed: str, errors: list[str]) -> str:
