@@ -147,7 +147,7 @@ def compress_file(
 
         if attempt < MAX_RETRIES:
             if verbose:
-                print(f"Validation errors (attempt {attempt + 1}), fixing…")
+                print(f"Validation errors (attempt {attempt + 1}), fixing...")
                 print(result)
             try:
                 compressed = _fix_errors(compressed, result.errors)
@@ -182,7 +182,7 @@ def compress_file(
         comp_tokens = _count_tokens_approx(compressed)
         saved_pct = 100 * (1 - comp_tokens / orig_tokens)
         print(
-            f"Done: {orig_tokens} → {comp_tokens} tokens "
+            f"Done: {orig_tokens} -> {comp_tokens} tokens "
             f"({saved_pct:.0f}% saved)"
         )
 

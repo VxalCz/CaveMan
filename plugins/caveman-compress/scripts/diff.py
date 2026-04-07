@@ -61,8 +61,8 @@ def diff_file(filepath: str | Path, context: int = 1) -> bool:
     saved = orig_tokens - comp_tokens
     pct = int(100 * saved / orig_tokens)
 
-    print(f"Diff: {backup_path.name}  →  {path.name}")
-    print(f"Tokens: {orig_tokens} → {comp_tokens}  ({pct}% saved, ~{saved} tokens)")
+    print(f"Diff: {backup_path.name}  ->  {path.name}")
+    print(f"Tokens: {orig_tokens} -> {comp_tokens}  ({pct}% saved, ~{saved} tokens)")
     print()
 
     has_changes = any(tag != "equal" for tag, *_ in opcodes)
@@ -74,7 +74,7 @@ def diff_file(filepath: str | Path, context: int = 1) -> bool:
         if tag == "equal":
             # Show context paragraphs (trimmed if long)
             for para in orig_paras[i1:i2]:
-                preview = para[:80] + "…" if len(para) > 80 else para
+                preview = para[:80] + "..." if len(para) > 80 else para
                 print(f"  {preview}")
             continue
 

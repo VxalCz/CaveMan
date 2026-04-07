@@ -1,7 +1,7 @@
 {
   "id": "caveman-compress",
   "name": "caveman-compress",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Compresses markdown/text memory files to save input tokens.",
   "author": { "name": "VxalCz" }
 }

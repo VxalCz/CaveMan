@@ -86,7 +86,7 @@ def validate(original: str, compressed: str) -> ValidationResult:
             if oh != ch:
                 result.errors.append(
                     f"Heading {i+1} changed: "
-                    f"'{oh[0]} {oh[1]}' → '{ch[0]} {ch[1]}'"
+                    f"'{oh[0]} {oh[1]}' -> '{ch[0]} {ch[1]}'"
                 )
 
     # ── Code blocks ───────────────────────────────────────────────────────────
