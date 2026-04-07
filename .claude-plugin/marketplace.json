@@ -1,6 +1,6 @@
 {
 	"$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-	"name": "CaveMan",
+	"name": "caveman-plugins",
 	"description": "Cut token usage on both sides of the conversation — Caveman mode forces concise responses, Caveman Compress shrinks memory files",
 	"owner": {
 		"name": "VxalCz"
