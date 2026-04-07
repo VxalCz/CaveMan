@@ -1,17 +1,7 @@
 {
   "id": "caveman-compress",
-  "name": "Caveman Compress",
+  "name": "caveman-compress",
   "version": "1.0.0",
   "description": "Compresses markdown/text memory files to save input tokens.",
-  "author": { "name": "VxalCz" },
-  "capabilities": {
-    "mcpServers": [
-      {
-        "name": "caveman-processor",
-        "command": "node",
-        "args": ["./dist/index.js"] 
-      }
-    ],
-    "instructions": "Use the caveman-processor to compress markdown files when saving memory or context."
-  }
+  "author": { "name": "VxalCz" }
 }
