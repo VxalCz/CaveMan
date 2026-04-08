@@ -15,6 +15,10 @@ import sys
 
 ORIGINAL_RE = re.compile(r"^(.+?)\.original(\.[^.]+)?$")
 
+# Resolve plugin root relative to this file: hooks/post-save.py -> plugin root
+_HOOK_DIR = os.path.dirname(os.path.abspath(__file__))
+_PLUGIN_ROOT = os.path.dirname(_HOOK_DIR)
+
 
 def main() -> int:
     file_path = os.environ.get("CLAUDE_TOOL_INPUT_FILE_PATH", "")
@@ -39,14 +43,9 @@ def main() -> int:
         f"after edit to {basename}..."
     )
 
-    plugin_root = os.environ.get("CLAUDE_PLUGIN_ROOT", os.path.dirname(__file__))
-    scripts_dir = os.path.join(os.path.dirname(plugin_root), "scripts")
-
     result = subprocess.run(
         [sys.executable, "-m", "scripts", "compress", compressed_path, "--quiet"],
-        cwd=os.path.dirname(plugin_root)
-        if os.path.isdir(os.path.join(os.path.dirname(plugin_root), "scripts"))
-        else plugin_root,
+        cwd=_PLUGIN_ROOT,
     )
 
     if result.returncode == 0:

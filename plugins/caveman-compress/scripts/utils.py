@@ -1,17 +1,28 @@
 """Shared utilities for caveman-compress scripts."""
 
+import re
+
+BACKUP_RE = re.compile(r"^(.+)\.original(\.[^.]+)?$")
+
+
+def _try_tiktoken():
+    """Try to load tiktoken encoder. Returns encoder or None."""
+    try:
+        import tiktoken
+        return tiktoken.encoding_for_model("gpt-4")
+    except Exception:
+        return None
+
+
+_tiktoken_enc = _try_tiktoken()
+
 
 def count_tokens_approx(text: str) -> int:
-    """Rough token estimate: ~4 chars per token.
+    """Token count: uses tiktoken if available, otherwise ~4 chars/token.
 
-    This is a simple heuristic based on average English tokenization.
-    Actual token counts vary by model and language:
-    - English prose: ~4 chars/token (reasonably accurate)
-    - Czech/diacritics: ~3 chars/token (this function overestimates savings by ~20-30%)
-    - Code-heavy text: ~3.5 chars/token
-
-    For precise counts, use tiktoken or the model's tokenizer.
-    For the purpose of savings estimation and comparison, the approximation
-    is consistent enough to be useful.
+    The tiktoken fallback slightly overestimates savings for Czech/diacritics
+    (~3 chars/token) but is consistent enough for comparison purposes.
     """
+    if _tiktoken_enc is not None:
+        return max(1, len(_tiktoken_enc.encode(text)))
     return max(1, len(text) // 4)

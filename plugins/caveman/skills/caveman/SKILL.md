@@ -8,7 +8,7 @@ Activate when user says:
 - Czech: "mluv stručně", "méně tokenů", "caveman mod"
 
 Deactivate when user says:
-- "stop caveman", "normal mode", "turn off caveman"
+- "stop caveman", "normal mode", "turn off caveman", "/caveman off"
 - Czech: "vypni caveman", "normální mód"
 
 ## Activation response

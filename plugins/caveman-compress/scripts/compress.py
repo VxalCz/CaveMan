@@ -16,7 +16,7 @@ from pathlib import Path
 
 from .detect import should_compress
 from .utils import count_tokens_approx
-from .validate import validate, FENCED_CODE_RE
+from .validate import FENCED_CODE_RE, validate
 
 COMPRESS_SYSTEM_PROMPT = """\
 You are a token-efficient text compressor for AI context files.
@@ -101,12 +101,14 @@ def compress_file(
     min_savings: int = 20,
     model: str | None = None,
     dry_run: bool = False,
+    force: bool = False,
 ) -> bool:
     """
     Compress a file in-place, saving a .original backup.
 
     min_savings: skip if estimated savings would be below this percentage.
     dry_run: print compressed output to stdout without writing files.
+    force: bypass min_savings threshold check.
     Returns True on success, False on failure/skip.
     """
     MAX_FILE_SIZE = 100 * 1024  # 100 KB
@@ -120,7 +122,8 @@ def compress_file(
         return False
 
     if verbose:
-        print(f"Compressing: {path}")
+        model_info = f" (model: {model})" if model else ""
+        print(f"Compressing: {path}{model_info}")
 
     # ── Determine backup path ─────────────────────────────────────────────────
     suffix = path.suffix or ""
@@ -147,8 +150,8 @@ def compress_file(
     original_text = source_path.read_text(encoding="utf-8")
 
     # ── Threshold check (local, no API call) ─────────────────────────────────
-    if min_savings > 0:
-        from .audit import verbosity_score, estimated_savings
+    if min_savings > 0 and not force:
+        from .audit import estimated_savings, verbosity_score
         score = verbosity_score(original_text)
         est = estimated_savings(score)
         if est < min_savings:
@@ -198,7 +201,7 @@ def compress_file(
     # ── Report ────────────────────────────────────────────────────────────────
     orig_tokens = count_tokens_approx(original_text)
     comp_tokens = count_tokens_approx(compressed)
-    saved_pct = 100 * (1 - comp_tokens / orig_tokens)
+    saved_pct = 100 * (1 - comp_tokens / orig_tokens) if orig_tokens else 0
 
     if dry_run:
         print(compressed)

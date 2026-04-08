@@ -6,7 +6,9 @@ import sys
 from pathlib import Path
 
 
-def undo_file(filepath: str | Path, verbose: bool = True) -> bool:
+def undo_file(
+    filepath: str | Path, verbose: bool = True, keep_backup: bool = False
+) -> bool:
     path = Path(filepath).resolve()
 
     if not path.exists():
@@ -29,7 +31,13 @@ def undo_file(filepath: str | Path, verbose: bool = True) -> bool:
     original = backup_path.read_text(encoding="utf-8")
     path.write_text(original, encoding="utf-8")
 
+    if not keep_backup:
+        backup_path.unlink()
+
     if verbose:
-        print(f"Restored: {path.name}  ←  {backup_path.name}")
+        if keep_backup:
+            print(f"Restored: {path.name}  <-  {backup_path.name} (backup kept)")
+        else:
+            print(f"Restored: {path.name}  <-  {backup_path.name} (backup removed)")
 
     return True

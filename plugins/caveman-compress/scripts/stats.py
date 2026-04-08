@@ -4,12 +4,9 @@ and report total token savings per session.
 """
 
 import json as _json
-import re
 from pathlib import Path
 
-from .utils import count_tokens_approx
-
-BACKUP_RE = re.compile(r"^(.+)\.original(\.[^.]+)?$")
+from .utils import BACKUP_RE, count_tokens_approx
 
 
 def collect_stats(root: str | Path) -> list[dict]:

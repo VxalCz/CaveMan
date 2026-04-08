@@ -54,6 +54,7 @@ def cmd_compress(args: argparse.Namespace) -> int:
             min_savings=args.min_savings,
             model=args.model,
             dry_run=args.dry_run,
+            force=args.force,
         )
         if ok:
             success_count += 1
@@ -81,7 +82,7 @@ def cmd_audit(args: argparse.Namespace) -> int:
 def cmd_undo(args: argparse.Namespace) -> int:
     from .undo import undo_file
 
-    ok = undo_file(args.file, verbose=not args.quiet)
+    ok = undo_file(args.file, verbose=not args.quiet, keep_backup=args.keep_backup)
     return 0 if ok else 1
 
 
@@ -135,6 +136,10 @@ def main() -> int:
         "--dry-run", "-n", action="store_true",
         help="Print compressed output to stdout without writing files",
     )
+    p_compress.add_argument(
+        "--force", "-f", action="store_true",
+        help="Bypass min-savings threshold check",
+    )
 
     # ── audit ─────────────────────────────────────────────────────────────────
     p_audit = sub.add_parser(
@@ -157,6 +162,10 @@ def main() -> int:
     p_undo = sub.add_parser("undo", help="Restore file from .original backup")
     p_undo.add_argument("file", help="Compressed file to restore")
     p_undo.add_argument("--quiet", "-q", action="store_true")
+    p_undo.add_argument(
+        "--keep-backup", action="store_true",
+        help="Keep the .original backup file after restoring",
+    )
 
     # ── stats ─────────────────────────────────────────────────────────────────
     p_stats = sub.add_parser(

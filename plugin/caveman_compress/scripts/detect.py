@@ -89,12 +89,12 @@ def _classify_by_content(path: Path) -> tuple[bool, str]:
         return False, "Empty file"
 
     # Count YAML-like lines
-    yaml_lines = sum(1 for l in lines if YAML_LINE_PATTERN.match(l))
+    yaml_lines = sum(1 for ln in lines if YAML_LINE_PATTERN.match(ln))
     if yaml_lines / len(lines) > 0.4:
         return False, f"Detected as YAML-like ({yaml_lines}/{len(lines)} lines) — skipped"
 
     # Count code-like lines
-    code_lines = sum(1 for l in lines if CODE_LINE_PATTERNS.match(l))
+    code_lines = sum(1 for ln in lines if CODE_LINE_PATTERNS.match(ln))
     if code_lines / len(lines) > 0.4:
         return False, f"Detected as code ({code_lines}/{len(lines)} lines) — skipped"
 

@@ -1,8 +1,7 @@
 """Shared fixtures for caveman-compress tests."""
 
-import pytest
-from pathlib import Path
 
+import pytest
 
 VERBOSE_TEXT = """\
 # Configuration

@@ -1,4 +1,3 @@
-import pytest
 from plugin.caveman_compress.scripts.validate import validate
 
 ORIGINAL = """\

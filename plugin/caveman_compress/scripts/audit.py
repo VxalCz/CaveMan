@@ -12,6 +12,14 @@ from pathlib import Path
 from .detect import should_compress
 from .utils import count_tokens_approx
 
+SKIP_DIRS = {
+    ".git", ".hg", ".svn",
+    "node_modules", "__pycache__", ".pytest_cache",
+    "venv", ".venv", "env", ".env",
+    "dist", "build", ".tox", ".mypy_cache", ".ruff_cache",
+    ".claude-plugin",
+}
+
 # Filler words used for verbosity scoring
 FILLER_WORDS = {
     # English
@@ -94,6 +102,8 @@ def audit_directory(root: str | Path, min_savings: int = 0) -> list[dict]:
 
     for path in sorted(root.rglob("*")):
         if not path.is_file():
+            continue
+        if any(part in SKIP_DIRS for part in path.relative_to(root).parts):
             continue
         ok, _ = should_compress(path)
         if not ok:

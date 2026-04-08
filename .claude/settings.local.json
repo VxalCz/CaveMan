@@ -32,7 +32,8 @@
       "Bash(xargs -I{} sh -c 'echo \"=== {} ===\" && cat \"{}\"')",
       "Bash(claude -p --help)",
       "Bash(claude -p)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(ruff check:*)"
     ]
   }
 }

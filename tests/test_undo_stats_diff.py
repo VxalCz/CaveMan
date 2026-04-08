@@ -1,8 +1,6 @@
-import pytest
-from pathlib import Path
-from plugin.caveman_compress.scripts.undo import undo_file
+from plugin.caveman_compress.scripts.diff import _split_paragraphs, diff_file
 from plugin.caveman_compress.scripts.stats import collect_stats
-from plugin.caveman_compress.scripts.diff import diff_file, _split_paragraphs
+from plugin.caveman_compress.scripts.undo import undo_file
 
 ORIGINAL = "This is the original verbose content with many unnecessary words."
 COMPRESSED = "Original verbose content."

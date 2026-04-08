@@ -10,6 +10,7 @@ Supported flags:
 - `--model <MODEL>` / `-m` — Claude model for compression (e.g. claude-haiku-4-5-20251001 for cheaper runs)
 - `--dry-run` / `-n` — print compressed output to stdout without writing files
 - `--min-savings <PCT>` / `-s` — skip files with estimated savings below PCT% (default: 20)
+- `--force` / `-f` — bypass min-savings threshold check
 - `--quiet` / `-q` — suppress progress output
 
 Run:

@@ -1,8 +1,7 @@
-import pytest
 from plugin.caveman_compress.scripts.audit import (
-    verbosity_score,
-    estimated_savings,
     audit_directory,
+    estimated_savings,
+    verbosity_score,
 )
 
 DENSE_TEXT = """\

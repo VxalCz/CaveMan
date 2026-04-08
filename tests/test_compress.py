@@ -1,11 +1,10 @@
 """Tests for compress_file: size limit, recompression from .original, dry_run."""
 
+from unittest.mock import patch
+
 import pytest
-from unittest.mock import patch, MagicMock
-from pathlib import Path
 
 from plugin.caveman_compress.scripts.compress import compress_file
-
 
 SAMPLE_TEXT = """\
 # Introduction

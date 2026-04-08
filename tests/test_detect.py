@@ -1,5 +1,3 @@
-import pytest
-from pathlib import Path
 from plugin.caveman_compress.scripts.detect import should_compress
 
 

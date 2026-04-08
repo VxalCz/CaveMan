@@ -1,6 +1,6 @@
 [project]
 name = "caveman"
-version = "1.0.2"
+version = "1.0.3"
 description = "Claude Code plugin that cuts token usage on both sides of the conversation"
 requires-python = ">=3.10"
 license = "MIT"
@@ -8,6 +8,7 @@ authors = [{ name = "VxalCz" }]
 
 [project.optional-dependencies]
 dev = ["pytest>=7.0", "ruff>=0.4"]
+precise = ["tiktoken>=0.5"]
 
 [tool.ruff]
 target-version = "py310"

@@ -10,8 +10,6 @@ from pathlib import Path
 
 from .utils import count_tokens_approx
 
-BACKUP_RE = re.compile(r"^(.+)\.original(\.[^.]+)?$")
-
 
 def _split_paragraphs(text: str) -> list[str]:
     """Split text into paragraphs (double newline boundaries)."""
@@ -61,7 +59,7 @@ def diff_file(filepath: str | Path, context: int = 1) -> bool:
     orig_tokens = count_tokens_approx(original_text)
     comp_tokens = count_tokens_approx(compressed_text)
     saved = orig_tokens - comp_tokens
-    pct = int(100 * saved / orig_tokens)
+    pct = int(100 * saved / orig_tokens) if orig_tokens else 0
 
     print(f"Diff: {backup_path.name}  →  {path.name}")
     print(f"Tokens: {orig_tokens} → {comp_tokens}  ({pct}% saved, ~{saved} tokens)")

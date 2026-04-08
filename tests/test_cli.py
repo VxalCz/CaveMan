@@ -1,11 +1,8 @@
 """Tests for __main__.py CLI dispatch and argument parsing."""
 
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
-from plugin.caveman_compress.scripts.__main__ import main, _resolve_targets
-from pathlib import Path
-
+from plugin.caveman_compress.scripts.__main__ import _resolve_targets, main
 
 # ── _resolve_targets ─────────────────────────────────────────────────────────
 
