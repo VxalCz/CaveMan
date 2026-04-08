@@ -38,10 +38,7 @@ def main() -> int:
     if not os.path.isfile(compressed_path):
         return 0
 
-    print(
-        f"[caveman-compress] Re-compressing {compressed_name} "
-        f"after edit to {basename}..."
-    )
+    print(f"[caveman-compress] Re-compressing {compressed_name} after edit to {basename}...")
 
     result = subprocess.run(
         [sys.executable, "-m", "scripts", "compress", compressed_path, "--quiet"],

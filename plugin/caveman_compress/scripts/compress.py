@@ -56,9 +56,7 @@ def _call_claude(prompt: str, system: str, model: str | None = None) -> str:
             "See: https://docs.anthropic.com/en/docs/claude-code"
         )
     if result.returncode != 0:
-        raise RuntimeError(
-            f"Claude CLI failed (exit {result.returncode}):\n{result.stderr}"
-        )
+        raise RuntimeError(f"Claude CLI failed (exit {result.returncode}):\n{result.stderr}")
     return result.stdout.strip()
 
 
@@ -72,8 +70,7 @@ def _compress_text(text: str, model: str | None = None) -> str:
 
     prompt = (
         "Compress the following text according to the rules. "
-        "Output only the compressed version:\n\n"
-        + protected
+        "Output only the compressed version:\n\n" + protected
     )
     compressed = _call_claude(prompt, COMPRESS_SYSTEM_PROMPT, model=model)
 
@@ -84,9 +81,7 @@ def _compress_text(text: str, model: str | None = None) -> str:
     return compressed
 
 
-def _fix_errors(
-    compressed: str, errors: list[str], model: str | None = None
-) -> str:
+def _fix_errors(compressed: str, errors: list[str], model: str | None = None) -> str:
     error_list = "\n".join(f"- {e}" for e in errors)
     prompt = (
         f"Fix these validation errors in the compressed text:\n{error_list}\n\n"
@@ -152,13 +147,12 @@ def compress_file(
     # ── Threshold check (local, no API call) ─────────────────────────────────
     if min_savings > 0 and not force:
         from .audit import estimated_savings, verbosity_score
+
         score = verbosity_score(original_text)
         est = estimated_savings(score)
         if est < min_savings:
             if verbose:
-                print(
-                    f"Skipped: estimated savings {est}% < threshold {min_savings}%"
-                )
+                print(f"Skipped: estimated savings {est}% < threshold {min_savings}%")
             return False
 
     # ── Compress ──────────────────────────────────────────────────────────────
@@ -187,8 +181,7 @@ def compress_file(
                 return False
         else:
             print(
-                f"Validation failed after {MAX_RETRIES} fix attempts. "
-                f"Original preserved.",
+                f"Validation failed after {MAX_RETRIES} fix attempts. Original preserved.",
                 file=sys.stderr,
             )
             print(result, file=sys.stderr)
@@ -206,8 +199,7 @@ def compress_file(
     if dry_run:
         print(compressed)
         print(
-            f"\n--- dry run: {orig_tokens} -> {comp_tokens} tokens "
-            f"({saved_pct:.0f}% saved) ---",
+            f"\n--- dry run: {orig_tokens} -> {comp_tokens} tokens ({saved_pct:.0f}% saved) ---",
             file=sys.stderr,
         )
         return True
@@ -222,9 +214,6 @@ def compress_file(
     path.write_text(compressed, encoding="utf-8")
 
     if verbose:
-        print(
-            f"Done: {orig_tokens} -> {comp_tokens} tokens "
-            f"({saved_pct:.0f}% saved)"
-        )
+        print(f"Done: {orig_tokens} -> {comp_tokens} tokens ({saved_pct:.0f}% saved)")
 
     return True

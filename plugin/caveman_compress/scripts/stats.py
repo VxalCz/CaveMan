@@ -55,9 +55,7 @@ def collect_stats(root: str | Path) -> list[dict]:
 
 def print_stats(records: list[dict], json: bool = False) -> None:
     if json:
-        output = [
-            {**r, "path": str(r["path"])} for r in records
-        ]
+        output = [{**r, "path": str(r["path"])} for r in records]
         print(_json.dumps(output, indent=2))
         return
 
@@ -68,10 +66,7 @@ def print_stats(records: list[dict], json: bool = False) -> None:
     col_path = max(len(str(r["path"])) for r in records)
     col_path = max(col_path, 4)
 
-    header = (
-        f"{'File':<{col_path}}  {'Original':>8}  {'Compressed':>10}  "
-        f"{'Saved':>6}  {'%':>4}"
-    )
+    header = f"{'File':<{col_path}}  {'Original':>8}  {'Compressed':>10}  {'Saved':>6}  {'%':>4}"
     print(header)
     print("-" * len(header))
 

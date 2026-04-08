@@ -114,47 +114,62 @@ def main() -> int:
     sub = parser.add_subparsers(dest="command", metavar="command")
 
     # ── compress ──────────────────────────────────────────────────────────────
-    p_compress = sub.add_parser(
-        "compress", help="Compress one or more files or directories"
-    )
+    p_compress = sub.add_parser("compress", help="Compress one or more files or directories")
     p_compress.add_argument(
-        "paths", nargs="+", metavar="path",
+        "paths",
+        nargs="+",
+        metavar="path",
         help="Files, directories, or glob patterns to compress",
     )
     p_compress.add_argument(
-        "--min-savings", "-s", type=int, default=20, metavar="PCT",
+        "--min-savings",
+        "-s",
+        type=int,
+        default=20,
+        metavar="PCT",
         help="Skip files where estimated savings < PCT%% (default: 20)",
     )
+    p_compress.add_argument("--quiet", "-q", action="store_true", help="Suppress progress output")
     p_compress.add_argument(
-        "--quiet", "-q", action="store_true", help="Suppress progress output"
-    )
-    p_compress.add_argument(
-        "--model", "-m", type=str, default=None, metavar="MODEL",
+        "--model",
+        "-m",
+        type=str,
+        default=None,
+        metavar="MODEL",
         help="Claude model to use for compression (e.g. claude-haiku-4-5-20251001)",
     )
     p_compress.add_argument(
-        "--dry-run", "-n", action="store_true",
+        "--dry-run",
+        "-n",
+        action="store_true",
         help="Print compressed output to stdout without writing files",
     )
     p_compress.add_argument(
-        "--force", "-f", action="store_true",
+        "--force",
+        "-f",
+        action="store_true",
         help="Bypass min-savings threshold check",
     )
 
     # ── audit ─────────────────────────────────────────────────────────────────
-    p_audit = sub.add_parser(
-        "audit", help="Scan for compressible files (no writes)"
-    )
+    p_audit = sub.add_parser("audit", help="Scan for compressible files (no writes)")
     p_audit.add_argument(
-        "directory", nargs="?", default=".",
+        "directory",
+        nargs="?",
+        default=".",
         help="Directory to scan (default: current directory)",
     )
     p_audit.add_argument(
-        "--min-savings", "-s", type=int, default=0, metavar="PCT",
+        "--min-savings",
+        "-s",
+        type=int,
+        default=0,
+        metavar="PCT",
         help="Only show files with estimated savings >= PCT%%",
     )
     p_audit.add_argument(
-        "--json", action="store_true",
+        "--json",
+        action="store_true",
         help="Output results as JSON instead of a table",
     )
 
@@ -163,27 +178,27 @@ def main() -> int:
     p_undo.add_argument("file", help="Compressed file to restore")
     p_undo.add_argument("--quiet", "-q", action="store_true")
     p_undo.add_argument(
-        "--keep-backup", action="store_true",
+        "--keep-backup",
+        action="store_true",
         help="Keep the .original backup file after restoring",
     )
 
     # ── stats ─────────────────────────────────────────────────────────────────
-    p_stats = sub.add_parser(
-        "stats", help="Show token savings across all compressed files"
-    )
+    p_stats = sub.add_parser("stats", help="Show token savings across all compressed files")
     p_stats.add_argument(
-        "directory", nargs="?", default=".",
+        "directory",
+        nargs="?",
+        default=".",
         help="Directory to scan (default: current directory)",
     )
     p_stats.add_argument(
-        "--json", action="store_true",
+        "--json",
+        action="store_true",
         help="Output results as JSON instead of a table",
     )
 
     # ── diff ──────────────────────────────────────────────────────────────────
-    p_diff = sub.add_parser(
-        "diff", help="Paragraph-level diff: original vs compressed"
-    )
+    p_diff = sub.add_parser("diff", help="Paragraph-level diff: original vs compressed")
     p_diff.add_argument("file", help="Compressed file to diff")
 
     # ── dispatch ──────────────────────────────────────────────────────────────

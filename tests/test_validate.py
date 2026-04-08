@@ -121,9 +121,7 @@ x = 1
 
 
 def test_code_block_count_mismatch():
-    compressed = GOOD_COMPRESSED.replace(
-        "```python\ndef foo():\n    return 42\n```\n", ""
-    )
+    compressed = GOOD_COMPRESSED.replace("```python\ndef foo():\n    return 42\n```\n", "")
     result = validate(ORIGINAL, compressed)
     assert not result.ok
     assert any("Code block" in e for e in result.errors)

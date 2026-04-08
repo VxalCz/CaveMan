@@ -50,6 +50,7 @@ TABLE_ROW_RE = re.compile(r"^\|.+\|$", re.MULTILINE)
 
 # ── Extractors ────────────────────────────────────────────────────────────────
 
+
 def _extract_headings(text: str) -> list[tuple[str, str]]:
     """Return list of (level_hashes, heading_text) tuples."""
     return [(m.group(1), m.group(2).strip()) for m in HEADING_RE.finditer(text)]
@@ -87,6 +88,7 @@ def _count_table_rows(text: str) -> int:
 
 # ── Main validator ────────────────────────────────────────────────────────────
 
+
 def validate(original: str, compressed: str) -> ValidationResult:
     result = ValidationResult()
 
@@ -103,8 +105,7 @@ def validate(original: str, compressed: str) -> ValidationResult:
         for i, (oh, ch) in enumerate(zip(orig_headings, comp_headings)):
             if oh != ch:
                 result.errors.append(
-                    f"Heading {i+1} changed: "
-                    f"'{oh[0]} {oh[1]}' → '{ch[0]} {ch[1]}'"
+                    f"Heading {i + 1} changed: '{oh[0]} {oh[1]}' → '{ch[0]} {ch[1]}'"
                 )
 
     # ── Code blocks ───────────────────────────────────────────────────────────
@@ -113,13 +114,12 @@ def validate(original: str, compressed: str) -> ValidationResult:
 
     if len(orig_blocks) != len(comp_blocks):
         result.errors.append(
-            f"Code block count mismatch: original={len(orig_blocks)}, "
-            f"compressed={len(comp_blocks)}"
+            f"Code block count mismatch: original={len(orig_blocks)}, compressed={len(comp_blocks)}"
         )
     else:
         for i, (ob, cb) in enumerate(zip(orig_blocks, comp_blocks)):
             if ob.strip() != cb.strip():
-                result.errors.append(f"Code block {i+1} was modified")
+                result.errors.append(f"Code block {i + 1} was modified")
 
     # ── URLs ──────────────────────────────────────────────────────────────────
     orig_urls = _extract_urls(original)
@@ -151,8 +151,7 @@ def validate(original: str, compressed: str) -> ValidationResult:
     comp_table_rows = _count_table_rows(compressed)
     if orig_table_rows > 0 and orig_table_rows != comp_table_rows:
         result.warnings.append(
-            f"Table row count changed: "
-            f"original={orig_table_rows}, compressed={comp_table_rows}"
+            f"Table row count changed: original={orig_table_rows}, compressed={comp_table_rows}"
         )
 
     # ── Bullet count (warning only, +-15%) ────────────────────────────────────

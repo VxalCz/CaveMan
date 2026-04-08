@@ -6,9 +6,7 @@ import sys
 from pathlib import Path
 
 
-def undo_file(
-    filepath: str | Path, verbose: bool = True, keep_backup: bool = False
-) -> bool:
+def undo_file(filepath: str | Path, verbose: bool = True, keep_backup: bool = False) -> bool:
     path = Path(filepath).resolve()
 
     if not path.exists():

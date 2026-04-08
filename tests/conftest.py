@@ -1,6 +1,5 @@
 """Shared fixtures for caveman-compress tests."""
 
-
 import pytest
 
 VERBOSE_TEXT = """\

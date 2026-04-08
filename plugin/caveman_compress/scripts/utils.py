@@ -9,6 +9,7 @@ def _try_tiktoken():
     """Try to load tiktoken encoder. Returns encoder or None."""
     try:
         import tiktoken
+
         return tiktoken.encoding_for_model("gpt-4")
     except Exception:
         return None

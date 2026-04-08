@@ -8,6 +8,7 @@ COMPRESSED = "Original verbose content."
 
 # ── undo ─────────────────────────────────────────────────────────────────────
 
+
 def test_undo_restores_file(tmp_path):
     compressed = tmp_path / "CLAUDE.md"
     backup = tmp_path / "CLAUDE.original.md"
@@ -44,6 +45,7 @@ def test_undo_extensionless(tmp_path):
 
 
 # ── stats ─────────────────────────────────────────────────────────────────────
+
 
 def test_stats_finds_pairs(tmp_path):
     (tmp_path / "CLAUDE.md").write_text(COMPRESSED)
@@ -86,6 +88,7 @@ def test_stats_recursive(tmp_path):
 
 
 # ── diff ──────────────────────────────────────────────────────────────────────
+
 
 def test_split_paragraphs_basic():
     text = "Para one.\n\nPara two.\n\nPara three."

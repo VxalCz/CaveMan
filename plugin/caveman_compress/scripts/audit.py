@@ -13,29 +13,82 @@ from .detect import should_compress
 from .utils import count_tokens_approx
 
 SKIP_DIRS = {
-    ".git", ".hg", ".svn",
-    "node_modules", "__pycache__", ".pytest_cache",
-    "venv", ".venv", "env", ".env",
-    "dist", "build", ".tox", ".mypy_cache", ".ruff_cache",
+    ".git",
+    ".hg",
+    ".svn",
+    "node_modules",
+    "__pycache__",
+    ".pytest_cache",
+    "venv",
+    ".venv",
+    "env",
+    ".env",
+    "dist",
+    "build",
+    ".tox",
+    ".mypy_cache",
+    ".ruff_cache",
     ".claude-plugin",
 }
 
 # Filler words used for verbosity scoring
 FILLER_WORDS = {
     # English
-    "just", "really", "basically", "actually", "simply", "essentially",
-    "quite", "very", "sure", "certainly", "obviously", "clearly", "totally",
-    "literally", "honestly", "frankly", "absolutely", "definitely",
-    "however", "furthermore", "additionally", "moreover",
-    "in order to", "make sure to", "remember to", "you should",
-    "it is worth noting", "it should be noted", "please note",
-    "i would recommend", "i would suggest", "you might want to",
-    "feel free to", "don't hesitate to",
+    "just",
+    "really",
+    "basically",
+    "actually",
+    "simply",
+    "essentially",
+    "quite",
+    "very",
+    "sure",
+    "certainly",
+    "obviously",
+    "clearly",
+    "totally",
+    "literally",
+    "honestly",
+    "frankly",
+    "absolutely",
+    "definitely",
+    "however",
+    "furthermore",
+    "additionally",
+    "moreover",
+    "in order to",
+    "make sure to",
+    "remember to",
+    "you should",
+    "it is worth noting",
+    "it should be noted",
+    "please note",
+    "i would recommend",
+    "i would suggest",
+    "you might want to",
+    "feel free to",
+    "don't hesitate to",
     # Czech
-    "prostě", "vlastně", "v podstatě", "zkrátka", "jednoduše", "v zásadě",
-    "docela", "celkem", "nicméně", "kromě toho", "navíc", "dále",
-    "samozřejmě", "určitě", "rozhodně", "upřímně", "opravdu",
-    "doporučoval bych", "měl bys", "nezapomeň",
+    "prostě",
+    "vlastně",
+    "v podstatě",
+    "zkrátka",
+    "jednoduše",
+    "v zásadě",
+    "docela",
+    "celkem",
+    "nicméně",
+    "kromě toho",
+    "navíc",
+    "dále",
+    "samozřejmě",
+    "určitě",
+    "rozhodně",
+    "upřímně",
+    "opravdu",
+    "doporučoval bych",
+    "měl bys",
+    "nezapomeň",
 }
 
 FILLER_RE = re.compile(
@@ -70,10 +123,7 @@ def verbosity_score(text: str) -> int:
 
     # Average sentence length (longer -> more likely to have filler)
     sentences = [s.strip() for s in SENTENCE_END_RE.split(clean) if s.strip()]
-    avg_sentence_len = (
-        sum(len(s.split()) for s in sentences) / len(sentences)
-        if sentences else 0
-    )
+    avg_sentence_len = sum(len(s.split()) for s in sentences) / len(sentences) if sentences else 0
     # Normalise: 10 words = tight (0.0), 30+ words = verbose (1.0)
     length_factor = min(1.0, max(0.0, (avg_sentence_len - 10) / 20))
 
@@ -139,9 +189,7 @@ def audit_directory(root: str | Path, min_savings: int = 0) -> list[dict]:
 def print_audit_table(records: list[dict], root: Path, json: bool = False) -> None:
     if json:
         # Convert Path objects to strings for JSON serialization
-        output = [
-            {**r, "path": str(r["path"])} for r in records
-        ]
+        output = [{**r, "path": str(r["path"])} for r in records]
         print(_json.dumps(output, indent=2))
         return
 
@@ -152,10 +200,7 @@ def print_audit_table(records: list[dict], root: Path, json: bool = False) -> No
     col_path = max(len(str(r["path"])) for r in records)
     col_path = max(col_path, 4)
 
-    header = (
-        f"{'File':<{col_path}}  {'Tokens':>6}  {'Score':>5}  "
-        f"{'Est. savings':>12}  {'Status'}"
-    )
+    header = f"{'File':<{col_path}}  {'Tokens':>6}  {'Score':>5}  {'Est. savings':>12}  {'Status'}"
     print(header)
     print("-" * len(header))
 

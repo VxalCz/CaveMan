@@ -6,6 +6,7 @@ from plugin.caveman_compress.scripts.__main__ import _resolve_targets, main
 
 # ── _resolve_targets ─────────────────────────────────────────────────────────
 
+
 def test_resolve_targets_file(tmp_path):
     f = tmp_path / "test.md"
     f.write_text("hello")
@@ -44,6 +45,7 @@ def test_resolve_targets_nonexistent():
 
 # ── CLI dispatch ─────────────────────────────────────────────────────────────
 
+
 def test_no_command_returns_1(monkeypatch):
     monkeypatch.setattr("sys.argv", ["caveman-compress"])
     assert main() == 1
@@ -53,9 +55,7 @@ def test_compress_dispatch(tmp_path, monkeypatch):
     f = tmp_path / "test.md"
     f.write_text("Some verbose text here.")
 
-    monkeypatch.setattr("sys.argv", [
-        "caveman-compress", "compress", str(f), "--quiet"
-    ])
+    monkeypatch.setattr("sys.argv", ["caveman-compress", "compress", str(f), "--quiet"])
 
     with patch(
         "plugin.caveman_compress.scripts.compress.compress_file",
@@ -73,11 +73,18 @@ def test_compress_with_model_and_dry_run(tmp_path, monkeypatch):
     f = tmp_path / "test.md"
     f.write_text("Text")
 
-    monkeypatch.setattr("sys.argv", [
-        "caveman-compress", "compress", str(f),
-        "--model", "claude-haiku-4-5-20251001",
-        "--dry-run", "--quiet",
-    ])
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "caveman-compress",
+            "compress",
+            str(f),
+            "--model",
+            "claude-haiku-4-5-20251001",
+            "--dry-run",
+            "--quiet",
+        ],
+    )
 
     with patch(
         "plugin.caveman_compress.scripts.compress.compress_file",
@@ -92,15 +99,16 @@ def test_compress_with_model_and_dry_run(tmp_path, monkeypatch):
 
 
 def test_audit_dispatch(tmp_path, monkeypatch):
-    monkeypatch.setattr("sys.argv", [
-        "caveman-compress", "audit", str(tmp_path)
-    ])
+    monkeypatch.setattr("sys.argv", ["caveman-compress", "audit", str(tmp_path)])
 
-    with patch(
-        "plugin.caveman_compress.scripts.audit.audit_directory",
-        return_value=[],
-    ), patch(
-        "plugin.caveman_compress.scripts.audit.print_audit_table",
+    with (
+        patch(
+            "plugin.caveman_compress.scripts.audit.audit_directory",
+            return_value=[],
+        ),
+        patch(
+            "plugin.caveman_compress.scripts.audit.print_audit_table",
+        ),
     ):
         result = main()
 
@@ -113,9 +121,7 @@ def test_undo_dispatch(tmp_path, monkeypatch):
     backup = tmp_path / "test.original.md"
     backup.write_text("original")
 
-    monkeypatch.setattr("sys.argv", [
-        "caveman-compress", "undo", str(f), "--quiet"
-    ])
+    monkeypatch.setattr("sys.argv", ["caveman-compress", "undo", str(f), "--quiet"])
 
     result = main()
     assert result == 0
@@ -123,15 +129,16 @@ def test_undo_dispatch(tmp_path, monkeypatch):
 
 
 def test_stats_dispatch(tmp_path, monkeypatch):
-    monkeypatch.setattr("sys.argv", [
-        "caveman-compress", "stats", str(tmp_path)
-    ])
+    monkeypatch.setattr("sys.argv", ["caveman-compress", "stats", str(tmp_path)])
 
-    with patch(
-        "plugin.caveman_compress.scripts.stats.collect_stats",
-        return_value=[],
-    ), patch(
-        "plugin.caveman_compress.scripts.stats.print_stats",
+    with (
+        patch(
+            "plugin.caveman_compress.scripts.stats.collect_stats",
+            return_value=[],
+        ),
+        patch(
+            "plugin.caveman_compress.scripts.stats.print_stats",
+        ),
     ):
         result = main()
 
@@ -144,9 +151,7 @@ def test_diff_dispatch(tmp_path, monkeypatch):
     backup = tmp_path / "test.original.md"
     backup.write_text("original text here")
 
-    monkeypatch.setattr("sys.argv", [
-        "caveman-compress", "diff", str(f)
-    ])
+    monkeypatch.setattr("sys.argv", ["caveman-compress", "diff", str(f)])
 
     result = main()
     assert result == 0

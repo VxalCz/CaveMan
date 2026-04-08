@@ -49,12 +49,21 @@ def test_extensionless_yaml_skipped(tmp_path):
 
 
 def test_extensionless_code_skipped(tmp_path):
-    code = "\n".join([
-        "import os", "import sys", "def main():", "    pass",
-        "class Foo:", "    def bar(self): pass",
-        "const x = 1", "function foo() {}", "return x",
-        "for i in range(10):", "    print(i)",
-    ])
+    code = "\n".join(
+        [
+            "import os",
+            "import sys",
+            "def main():",
+            "    pass",
+            "class Foo:",
+            "    def bar(self): pass",
+            "const x = 1",
+            "function foo() {}",
+            "return x",
+            "for i in range(10):",
+            "    print(i)",
+        ]
+    )
     f = tmp_path / "script"
     f.write_text(code)
     ok, reason = should_compress(f)

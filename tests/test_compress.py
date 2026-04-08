@@ -33,6 +33,7 @@ def _mock_compress(text, model=None):
 
 # ── Size limit ───────────────────────────────────────────────────────────────
 
+
 def test_size_limit_skips_large_file(tmp_path):
     big = tmp_path / "big.md"
     big.write_text("x" * (101 * 1024), encoding="utf-8")
@@ -52,6 +53,7 @@ def test_size_limit_allows_small_file(tmp_path):
 
 
 # ── Recompression from .original ─────────────────────────────────────────────
+
 
 def test_recompress_reads_from_original(tmp_path):
     """When .original backup exists, compress should read from it."""
@@ -78,6 +80,7 @@ def test_recompress_reads_from_original(tmp_path):
 
 # ── Dry run ──────────────────────────────────────────────────────────────────
 
+
 def test_dry_run_does_not_write(tmp_path, capsys):
     doc = tmp_path / "doc.md"
     doc.write_text(SAMPLE_TEXT, encoding="utf-8")
@@ -100,6 +103,7 @@ def test_dry_run_does_not_write(tmp_path, capsys):
 
 # ── Model passthrough ────────────────────────────────────────────────────────
 
+
 def test_model_passed_to_claude(tmp_path):
     doc = tmp_path / "doc.md"
     doc.write_text(SAMPLE_TEXT, encoding="utf-8")
@@ -114,8 +118,6 @@ def test_model_passed_to_claude(tmp_path):
         "plugin.caveman_compress.scripts.compress._compress_text",
         side_effect=spy_compress,
     ):
-        compress_file(
-            doc, verbose=False, min_savings=0, model="claude-haiku-4-5-20251001"
-        )
+        compress_file(doc, verbose=False, min_savings=0, model="claude-haiku-4-5-20251001")
 
     assert captured_model["model"] == "claude-haiku-4-5-20251001"
