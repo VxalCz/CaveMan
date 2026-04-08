@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m py_compile C:/val/CaveCZ/plugin/caveman-compress/scripts/detect.py)",
+      "Bash(python -m py_compile C:/val/CaveCZ/plugin/caveman-compress/scripts/validate.py)",
+      "Bash(python -m py_compile C:/val/CaveCZ/plugin/caveman-compress/scripts/compress.py)",
+      "Bash(python -m py_compile C:/val/CaveCZ/plugin/caveman-compress/scripts/__main__.py)",
+      "Bash(python -m py_compile C:/val/CaveCZ/plugin/caveman_compress/scripts/detect.py)",
+      "Bash(python -m py_compile C:/val/CaveCZ/plugin/caveman_compress/scripts/validate.py)",
+      "Bash(python -m py_compile C:/val/CaveCZ/plugin/caveman_compress/scripts/compress.py)",
+      "Bash(python -m py_compile C:/val/CaveCZ/plugin/caveman_compress/scripts/__main__.py)",
+      "Bash(python -m py_compile plugin/caveman_compress/scripts/audit.py)",
+      "Bash(python -m py_compile plugin/caveman_compress/scripts/undo.py)",
+      "Bash(python -m py_compile plugin/caveman_compress/scripts/stats.py)",
+      "Bash(python -m py_compile plugin/caveman_compress/scripts/diff.py)",
+      "Bash(python -m py_compile plugin/caveman_compress/scripts/compress.py)",
+      "Bash(python -m pytest tests/ -v)",
+      "Bash(pip install:*)",
+      "Bash(mkdir -p \"C:/val/CaveCZ/.claude-plugin\")",
+      "Bash(mkdir -p \"C:/val/CaveCZ/plugins/caveman/.claude-plugin\")",
+      "Bash(mkdir -p \"C:/val/CaveCZ/plugins/caveman/skills/caveman\")",
+      "Bash(mkdir -p \"C:/val/CaveCZ/plugins/caveman-compress/.claude-plugin\")",
+      "Bash(mkdir -p \"C:/val/CaveCZ/plugins/caveman-compress/skills/caveman-compress\")",
+      "Bash(git config:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Read(//c/Users/jpa/.claude/plugins/marketplaces/caveman-plugins/plugins/caveman-compress/**)",
+      "Bash(python -m scripts stats \"C:/val/CaveCZ/README.md\")",
+      "Bash(python -m scripts stats \"C:/val/CaveCZ\")",
+      "Bash(python -m scripts undo \"C:/val/CaveCZ/README.md\")",
+      "Bash(xargs -I{} sh -c 'echo \"=== {} ===\" && cat \"{}\"')",
+      "Bash(claude -p --help)",
+      "Bash(claude -p)",
+      "Bash(python:*)"
+    ]
+  }
+}

@@ -8,6 +8,8 @@ import re
 import sys
 from pathlib import Path
 
+from .utils import count_tokens_approx
+
 BACKUP_RE = re.compile(r"^(.+)\.original(\.[^.]+)?$")
 
 
@@ -56,8 +58,8 @@ def diff_file(filepath: str | Path, context: int = 1) -> bool:
     matcher = difflib.SequenceMatcher(None, orig_paras, comp_paras, autojunk=False)
     opcodes = matcher.get_opcodes()
 
-    orig_tokens = max(1, len(original_text) // 4)
-    comp_tokens = max(1, len(compressed_text) // 4)
+    orig_tokens = count_tokens_approx(original_text)
+    comp_tokens = count_tokens_approx(compressed_text)
     saved = orig_tokens - comp_tokens
     pct = int(100 * saved / orig_tokens)
 

@@ -52,6 +52,8 @@ def cmd_compress(args: argparse.Namespace) -> int:
             path,
             verbose=not args.quiet,
             min_savings=args.min_savings,
+            model=args.model,
+            dry_run=args.dry_run,
         )
         if ok:
             success_count += 1
@@ -72,7 +74,7 @@ def cmd_audit(args: argparse.Namespace) -> int:
         return 1
 
     records = audit_directory(root, min_savings=args.min_savings)
-    print_audit_table(records, root)
+    print_audit_table(records, root, json=args.json)
     return 0
 
 
@@ -92,7 +94,7 @@ def cmd_stats(args: argparse.Namespace) -> int:
         return 1
 
     records = collect_stats(root)
-    print_stats(records)
+    print_stats(records, json=args.json)
     return 0
 
 
@@ -125,6 +127,14 @@ def main() -> int:
     p_compress.add_argument(
         "--quiet", "-q", action="store_true", help="Suppress progress output"
     )
+    p_compress.add_argument(
+        "--model", "-m", type=str, default=None, metavar="MODEL",
+        help="Claude model to use for compression (e.g. claude-haiku-4-5-20251001)",
+    )
+    p_compress.add_argument(
+        "--dry-run", "-n", action="store_true",
+        help="Print compressed output to stdout without writing files",
+    )
 
     # ── audit ─────────────────────────────────────────────────────────────────
     p_audit = sub.add_parser(
@@ -137,6 +147,10 @@ def main() -> int:
     p_audit.add_argument(
         "--min-savings", "-s", type=int, default=0, metavar="PCT",
         help="Only show files with estimated savings >= PCT%%",
+    )
+    p_audit.add_argument(
+        "--json", action="store_true",
+        help="Output results as JSON instead of a table",
     )
 
     # ── undo ──────────────────────────────────────────────────────────────────
@@ -151,6 +165,10 @@ def main() -> int:
     p_stats.add_argument(
         "directory", nargs="?", default=".",
         help="Directory to scan (default: current directory)",
+    )
+    p_stats.add_argument(
+        "--json", action="store_true",
+        help="Output results as JSON instead of a table",
     )
 
     # ── diff ──────────────────────────────────────────────────────────────────

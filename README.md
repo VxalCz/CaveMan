@@ -19,7 +19,8 @@ plugin/
 └── caveman_compress/
     ├── SKILL.md                    ← model instructions (when/how to run pipeline)
     ├── hooks/
-    │   ├── post-save.sh            ← auto-compress hook script
+    │   ├── post-save.py            ← auto-compress hook (cross-platform)
+    │   ├── post-save.sh            ← auto-compress hook (bash, legacy)
     │   └── settings-example.json  ← Claude Code hook configuration example
     └── scripts/
         ├── __main__.py             ← CLI entry point (subcommands)
@@ -93,7 +94,7 @@ The hook watches for edits to `.original.*` files and automatically re-compresse
 
 **Setup:**
 
-1. Copy the hook config into your project's `.claude/settings.json`:
+Copy the hook config into your project's `.claude/settings.json`:
 
 ```json
 {
@@ -104,7 +105,7 @@ The hook watches for edits to `.original.*` files and automatically re-compresse
         "hooks": [
           {
             "type": "command",
-            "command": "bash plugin/caveman_compress/hooks/post-save.sh"
+            "command": "python plugin/caveman_compress/hooks/post-save.py"
           }
         ]
       }
@@ -113,10 +114,6 @@ The hook watches for edits to `.original.*` files and automatically re-compresse
 }
 ```
 
-2. Make the hook script executable:
-
-```bash
-chmod +x plugin/caveman_compress/hooks/post-save.sh
-```
-
 After that, every time Claude edits a `.original.md` file, the compressed version is regenerated automatically.
+
+> The hook is a Python script -- works on Windows, macOS, and Linux without extra dependencies.

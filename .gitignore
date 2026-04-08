@@ -2,3 +2,17 @@ __pycache__/
 *.pyc
 *.pyo
 .pytest_cache/
+
+# Caveman Compress backups
+*.original.md
+*.original.txt
+*.original.rst
+
+# Python
+dist/
+*.egg-info/
+venv/
+.venv/
+
+# Environment
+.env

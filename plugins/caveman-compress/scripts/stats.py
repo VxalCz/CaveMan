@@ -3,14 +3,13 @@
 and report total token savings per session.
 """
 
+import json as _json
 import re
 from pathlib import Path
 
+from .utils import count_tokens_approx
+
 BACKUP_RE = re.compile(r"^(.+)\.original(\.[^.]+)?$")
-
-
-def _count_tokens(text: str) -> int:
-    return max(1, len(text) // 4)
 
 
 def collect_stats(root: str | Path) -> list[dict]:
@@ -39,8 +38,8 @@ def collect_stats(root: str | Path) -> list[dict]:
         original_text = backup_path.read_text(encoding="utf-8", errors="replace")
         compressed_text = compressed_path.read_text(encoding="utf-8", errors="replace")
 
-        orig_tokens = _count_tokens(original_text)
-        comp_tokens = _count_tokens(compressed_text)
+        orig_tokens = count_tokens_approx(original_text)
+        comp_tokens = count_tokens_approx(compressed_text)
         saved = orig_tokens - comp_tokens
         pct = int(100 * saved / orig_tokens) if orig_tokens else 0
 
@@ -57,7 +56,14 @@ def collect_stats(root: str | Path) -> list[dict]:
     return results
 
 
-def print_stats(records: list[dict]) -> None:
+def print_stats(records: list[dict], json: bool = False) -> None:
+    if json:
+        output = [
+            {**r, "path": str(r["path"])} for r in records
+        ]
+        print(_json.dumps(output, indent=2))
+        return
+
     if not records:
         print("No compressed files found. Run /caveman-compress first.")
         return

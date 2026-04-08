@@ -128,3 +128,91 @@ def test_code_block_count_mismatch():
     result = validate(ORIGINAL, compressed)
     assert not result.ok
     assert any("Code block" in e for e in result.errors)
+
+
+# ── Frontmatter validation ───────────────────────────────────────────────────
+
+FRONTMATTER_ORIGINAL = """\
+---
+title: My Doc
+version: 1.0
+---
+
+# Heading
+
+This is a very verbose and unnecessarily long description of the content.
+"""
+
+FRONTMATTER_GOOD = """\
+---
+title: My Doc
+version: 1.0
+---
+
+# Heading
+
+Brief description of content.
+"""
+
+
+def test_frontmatter_preserved_passes():
+    result = validate(FRONTMATTER_ORIGINAL, FRONTMATTER_GOOD)
+    assert result.ok, str(result)
+
+
+def test_frontmatter_removed_is_error():
+    compressed = "# Heading\n\nBrief description of content.\n"
+    result = validate(FRONTMATTER_ORIGINAL, compressed)
+    assert not result.ok
+    assert any("frontmatter" in e.lower() for e in result.errors)
+
+
+def test_frontmatter_modified_is_error():
+    compressed = FRONTMATTER_ORIGINAL.replace("version: 1.0", "version: 2.0")
+    result = validate(FRONTMATTER_ORIGINAL, compressed)
+    assert not result.ok
+    assert any("frontmatter" in e.lower() for e in result.errors)
+
+
+def test_no_frontmatter_no_error():
+    """Files without frontmatter should not trigger frontmatter errors."""
+    result = validate(ORIGINAL, GOOD_COMPRESSED)
+    assert not any("frontmatter" in e.lower() for e in result.errors)
+
+
+# ── Table validation ─────────────────────────────────────────────────────────
+
+TABLE_ORIGINAL = """\
+# Config
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| debug  | false   | Enable debug mode for verbose logging |
+| port   | 3000    | The port number to listen on |
+"""
+
+TABLE_GOOD = """\
+# Config
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| debug  | false   | Enable debug mode |
+| port   | 3000    | Port to listen on |
+"""
+
+
+def test_table_rows_preserved_passes():
+    result = validate(TABLE_ORIGINAL, TABLE_GOOD)
+    assert result.ok, str(result)
+
+
+def test_table_row_removed_is_warning():
+    compressed = """\
+# Config
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| debug  | false   | Enable debug mode |
+"""
+    result = validate(TABLE_ORIGINAL, compressed)
+    assert any("table" in w.lower() for w in result.warnings)

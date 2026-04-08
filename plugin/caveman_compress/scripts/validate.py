@@ -4,12 +4,14 @@ Local validation of compressed output — no tokens consumed.
 Checks:
   Errors (block and trigger targeted fix):
     - Headings count and text must match
-    - Code blocks must be identical
+    - Code blocks must be identical (fenced + indented)
     - URLs must all be preserved
+    - YAML frontmatter must be preserved verbatim
 
   Warnings (logged, not fixed):
     - File paths preserved
-    - Bullet count within ±15%
+    - Bullet count within +-15%
+    - Table row count preserved
 """
 
 import re
@@ -38,10 +40,12 @@ class ValidationResult:
 
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.+)", re.MULTILINE)
 FENCED_CODE_RE = re.compile(r"```[\s\S]*?```", re.MULTILINE)
-INDENTED_CODE_RE = re.compile(r"(?:^|\n)((?:    .+\n?)+)")
+INDENTED_CODE_RE = re.compile(r"(?:(?:^|\n)\n)((?:(?:    |\t).+\n?)+)")
 URL_RE = re.compile(r"https?://[^\s\)\]\"'>]+")
 FILE_PATH_RE = re.compile(r"(?:^|[\s`\"'(])(\.{0,2}/[\w./\-]+\.\w+)")
 BULLET_RE = re.compile(r"^\s*[-*+]\s+", re.MULTILINE)
+FRONTMATTER_RE = re.compile(r"\A---\n([\s\S]*?)\n---", re.MULTILINE)
+TABLE_ROW_RE = re.compile(r"^\|.+\|$", re.MULTILINE)
 
 
 # ── Extractors ────────────────────────────────────────────────────────────────
@@ -52,7 +56,10 @@ def _extract_headings(text: str) -> list[tuple[str, str]]:
 
 
 def _extract_code_blocks(text: str) -> list[str]:
-    return FENCED_CODE_RE.findall(text)
+    """Extract fenced and indented code blocks."""
+    fenced = FENCED_CODE_RE.findall(text)
+    indented = INDENTED_CODE_RE.findall(text)
+    return fenced + indented
 
 
 def _extract_urls(text: str) -> set[str]:
@@ -65,6 +72,17 @@ def _extract_file_paths(text: str) -> set[str]:
 
 def _count_bullets(text: str) -> int:
     return len(BULLET_RE.findall(text))
+
+
+def _extract_frontmatter(text: str) -> str | None:
+    """Extract YAML frontmatter (between leading --- delimiters)."""
+    m = FRONTMATTER_RE.match(text)
+    return m.group(0) if m else None
+
+
+def _count_table_rows(text: str) -> int:
+    """Count markdown table rows (lines matching |...|)."""
+    return len(TABLE_ROW_RE.findall(text))
 
 
 # ── Main validator ────────────────────────────────────────────────────────────
@@ -119,7 +137,25 @@ def validate(original: str, compressed: str) -> ValidationResult:
         for p in sorted(missing_paths):
             result.warnings.append(f"File path may be missing: {p}")
 
-    # ── Bullet count (warning only, ±15%) ────────────────────────────────────
+    # ── YAML frontmatter ────────────────────────────────────────────────────
+    orig_fm = _extract_frontmatter(original)
+    comp_fm = _extract_frontmatter(compressed)
+    if orig_fm is not None:
+        if comp_fm is None:
+            result.errors.append("YAML frontmatter was removed")
+        elif orig_fm.strip() != comp_fm.strip():
+            result.errors.append("YAML frontmatter was modified")
+
+    # ── Table rows (warning only) ────────────────────────────────────────────
+    orig_table_rows = _count_table_rows(original)
+    comp_table_rows = _count_table_rows(compressed)
+    if orig_table_rows > 0 and orig_table_rows != comp_table_rows:
+        result.warnings.append(
+            f"Table row count changed: "
+            f"original={orig_table_rows}, compressed={comp_table_rows}"
+        )
+
+    # ── Bullet count (warning only, +-15%) ────────────────────────────────────
     orig_bullets = _count_bullets(original)
     comp_bullets = _count_bullets(compressed)
     if orig_bullets > 0:

@@ -5,10 +5,12 @@ Reports a table: file, current tokens, verbosity score, estimated savings.
 Pure local analysis, no API calls.
 """
 
+import json as _json
 import re
 from pathlib import Path
 
 from .detect import should_compress
+from .utils import count_tokens_approx
 
 # Filler words used for verbosity scoring
 FILLER_WORDS = {
@@ -52,23 +54,25 @@ def verbosity_score(text: str) -> int:
     if not words:
         return 1
 
-    # Filler density
+    # Filler density (typically 0-15% for verbose text)
     filler_count = len(FILLER_RE.findall(clean))
     filler_ratio = filler_count / len(words)
+    # Normalise: 0% = 0.0, 10%+ = 1.0
+    filler_factor = min(1.0, filler_ratio / 0.10)
 
-    # Average sentence length (longer → more likely to have filler)
+    # Average sentence length (longer -> more likely to have filler)
     sentences = [s.strip() for s in SENTENCE_END_RE.split(clean) if s.strip()]
     avg_sentence_len = (
         sum(len(s.split()) for s in sentences) / len(sentences)
         if sentences else 0
     )
-    # Normalise: 10 words = tight, 30+ words = verbose
+    # Normalise: 10 words = tight (0.0), 30+ words = verbose (1.0)
     length_factor = min(1.0, max(0.0, (avg_sentence_len - 10) / 20))
 
-    raw = filler_ratio * 0.6 + length_factor * 0.4
-    # Map 0–0.25 → 1–10
-    score = int(1 + min(raw / 0.25, 1.0) * 9)
-    return score
+    raw = filler_factor * 0.6 + length_factor * 0.4
+    # Map 0.0-1.0 -> 1-10
+    score = int(1 + raw * 9)
+    return min(10, max(1, score))
 
 
 def estimated_savings(score: int) -> int:
@@ -78,10 +82,6 @@ def estimated_savings(score: int) -> int:
     """
     # score 1 → ~15%, score 10 → ~60%
     return int(15 + (score - 1) * (45 / 9))
-
-
-def _count_tokens(text: str) -> int:
-    return max(1, len(text) // 4)
 
 
 def audit_directory(root: str | Path, min_savings: int = 0) -> list[dict]:
@@ -100,7 +100,7 @@ def audit_directory(root: str | Path, min_savings: int = 0) -> list[dict]:
             continue
 
         text = path.read_text(encoding="utf-8", errors="replace")
-        tokens = _count_tokens(text)
+        tokens = count_tokens_approx(text)
         score = verbosity_score(text)
         savings = estimated_savings(score)
 
@@ -126,7 +126,15 @@ def audit_directory(root: str | Path, min_savings: int = 0) -> list[dict]:
     return results
 
 
-def print_audit_table(records: list[dict], root: Path) -> None:
+def print_audit_table(records: list[dict], root: Path, json: bool = False) -> None:
+    if json:
+        # Convert Path objects to strings for JSON serialization
+        output = [
+            {**r, "path": str(r["path"])} for r in records
+        ]
+        print(_json.dumps(output, indent=2))
+        return
+
     if not records:
         print("No compressible files found.")
         return
